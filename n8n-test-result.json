@@ -1,0 +1,49 @@
+{
+  "n8n_version": "2.45.5",
+  "runtime": "real local n8n, imported and published both workflows",
+  "cases": [
+    {
+      "case": "webhook_auth",
+      "http": 403,
+      "passed": true
+    },
+    {
+      "case": "demo_enqueue",
+      "http": 202,
+      "passed": true
+    },
+    {
+      "case": "demo_duplicate",
+      "http": 200,
+      "passed": true
+    },
+    {
+      "case": "conflicting_payment",
+      "http": 409,
+      "passed": true
+    },
+    {
+      "case": "payload_validation",
+      "http": 422,
+      "passed": true
+    },
+    {
+      "case": "gateway_forgery",
+      "http": 422,
+      "passed": true
+    },
+    {
+      "case": "verified_gateway_fixture",
+      "http": 200,
+      "passed": true
+    },
+    {
+      "case": "gateway_duplicate",
+      "http": 200,
+      "passed": true
+    }
+  ],
+  "simulated_receipts": 2,
+  "external_emails_sent": 0,
+  "provider_integration": "Midtrans GET status fixture; Airtable and Resend simulated; no real accounts"
+}

@@ -1,0 +1,25 @@
+{
+  "demo": "local HTTP; no n8n engine or external APIs",
+  "requests": [
+    {
+      "status": "queued",
+      "payment_id": "pay_demo_001",
+      "mode": "demo"
+    },
+    {
+      "status": "duplicate",
+      "payment_id": "pay_demo_001",
+      "mode": "demo"
+    }
+  ],
+  "receipt_count": 1,
+  "receipt_preview": {
+    "from": "Demo <receipt@example.test>",
+    "subject": "Receipt pay_demo_001",
+    "text": "PORTFOLIO DEMO\nPayment: pay_demo_001\nOrder: order_demo_001\nPaid: IDR 150,000\nDate: 2026-10-29T03:00:00+00:00",
+    "to": [
+      "customer@example.test"
+    ]
+  },
+  "external_emails_sent": 0
+}

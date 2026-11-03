@@ -1,0 +1,117 @@
+{
+  "name": "Portfolio - Durable Encrypted Receipt Demo",
+  "active": false,
+  "nodes": [
+    {
+      "id": "payment-hook",
+      "name": "Payment Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ],
+      "webhookId": "portfolio-payment-receipt-v1",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-payment-receipt",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "receipt-processor",
+      "name": "Process Receipt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8787/payments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}",
+        "options": {
+          "timeout": 120000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "response",
+      "name": "Return Result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        780,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}"
+        }
+      }
+    },
+    {
+      "id": "setup-note",
+      "name": "Setup and Safety",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        250,
+        60
+      ],
+      "parameters": {
+        "width": 800,
+        "height": 190,
+        "content": "## Demo v2 - asynchronous\nWebhook Header Auth: X-Webhook-Key. Processor Header Auth: X-Processor-Key.\nStart processor.py in demo mode; imports no secrets.\n202 queued means persisted, not email sent. Poll private metrics or admin.py status.\nDocker URL: http://processor:8787/payments.\nFor sandbox payment verification import workflow.midtrans.n8n.json."
+      }
+    }
+  ],
+  "connections": {
+    "Payment Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Receipt": {
+      "main": [
+        [
+          {
+            "node": "Return Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  },
+  "pinData": {},
+  "tags": []
+}

@@ -1,0 +1,38 @@
+{
+  "caddy_version": "2.11.7",
+  "source": "adapted distributable Caddyfile; only bind/upstream/certificate changed for local fixture",
+  "tls": "real local HTTPS, certificate validated against explicit test trust anchor",
+  "cases": [
+    {
+      "path": "/",
+      "http": 404,
+      "passed": true
+    },
+    {
+      "path": "/rest/settings",
+      "http": 404,
+      "passed": true
+    },
+    {
+      "path": "/metrics",
+      "http": 404,
+      "passed": true
+    },
+    {
+      "path": "/payments",
+      "http": 404,
+      "passed": true
+    },
+    {
+      "case": "TLS verified and only signed gateway route forwarded",
+      "http": 200,
+      "passed": true
+    },
+    {
+      "case": "oversized body blocked",
+      "http": 413,
+      "passed": true
+    }
+  ],
+  "public_dns_acme_docker_host": "not tested"
+}

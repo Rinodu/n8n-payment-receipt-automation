@@ -1,0 +1,50 @@
+services:
+  processor:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      BIND_HOST: 0.0.0.0
+    volumes:
+      - receipt_data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8787/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.45.5
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:5678:5678
+    environment:
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Set a separate n8n encryption key privately}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      EXECUTIONS_DATA_SAVE_ON_ERROR: none
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: none
+      EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS: "false"
+      EXECUTIONS_DATA_PRUNE: "true"
+      WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
+    volumes:
+      - n8n_data:/home/node/.n8n
+  caddy:
+    image: caddy:2.11.7
+    profiles: [public]
+    restart: unless-stopped
+    environment:
+      RECEIPT_DOMAIN: ${RECEIPT_DOMAIN:-localhost}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+volumes:
+  receipt_data:
+  n8n_data:
+  caddy_data:

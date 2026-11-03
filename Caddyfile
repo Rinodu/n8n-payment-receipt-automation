@@ -1,0 +1,18 @@
+{$RECEIPT_DOMAIN} {
+    request_body {
+        max_size 16KB
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Cache-Control no-store
+        Strict-Transport-Security "max-age=31536000"
+        -Server
+    }
+    # Only the signed Midtrans production webhook is public; editor/admin remain private.
+    handle /webhook/portfolio-midtrans-sandbox {
+        reverse_proxy n8n:5678
+    }
+    handle {
+        respond "Not found" 404
+    }
+}

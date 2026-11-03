@@ -1,0 +1,6 @@
+{
+  "order_id": "order_demo_001",
+  "email": "customer@example.test",
+  "amount": 150000,
+  "currency": "IDR"
+}
